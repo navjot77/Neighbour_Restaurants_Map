@@ -21,7 +21,7 @@ minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
             <h2><input data-bind="value: query, valueUpdate:'keyup'"></h2>
 
             <ul data-bind="foreach: list">
-            <li data-bind="text: name, visible: show"></li>
+            <li data-bind="text: name, visible: show, click:gotClicked"></li>
             </ul>
         </div>
         <div class="col-sm-7">

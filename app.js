@@ -35,11 +35,30 @@ var model= function (data) {
     var self=this;
     self.name=data.title;
     self.show=ko.observable(true);
-     self.marker = new google.maps.Marker({
+    self.marker = new google.maps.Marker({
     position: data.location,
     map: map,
-    title: data.title
+    title: data.title,
+    animation: google.maps.Animation.DROP
   });
+    self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+    self.gotClicked=function(){
+        if (self.marker.getAnimation() !== null) {
+    self.marker.setAnimation(null);
+  } else {
+            self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+
+    self.marker.setAnimation(google.maps.Animation.BOUNCE);
+    window.setTimeout(function(){
+
+    self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+    self.marker.setAnimation(null);},2000);
+  }
+
+
+
+    }
+    
 }
 
 var ViewModel = function() {
@@ -50,8 +69,7 @@ self.query=ko.observable();
 for(i=0; i<locations.length;i++) {
 self.list.push(new model(locations[i]));
 }
-
-
+    
 self.query.subscribe(function(value){
 if (value != "") {
 var value = value.toLowerCase();
