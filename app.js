@@ -53,11 +53,15 @@ var model= function (data) {
 
     self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
     self.marker.setAnimation(null);},2000);
+
   }
-
-
-
-    }
+}
+    self.marker.addListener('click',function(){
+        //Call API here.. use ajax and get the data.. and display
+        infowindow.setContent('<p>Hello This is me%s</p>'+self.name);
+        infowindow.open(map,self.marker);
+        console.log("Inside addListerner")
+    })
     
 }
 
@@ -78,8 +82,6 @@ self.list().forEach(function (each, index) {
 if ((each.name.toLowerCase()).search(valRe) == -1) {
 each.show(false);
     each.marker.setMap(null);
-//    console.log(each.name);
-//  console.log("Not found");
 }
 else{
     each.marker.setMap(map);
@@ -94,8 +96,6 @@ each.show(true);
 });
 }
 });
-
-
 
 
 };
