@@ -15,15 +15,30 @@ minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 </head>
 <body>
 
-<h1><input data-bind="value: query, valueUpdate:'keyup'"></h1>
+<div class="jumbotron">
+    <div class="row" style="margin: 0px;">
+        <div class="col-sm-4">
+            <h2><input data-bind="value: query, valueUpdate:'keyup'"></h2>
 
-<ul data-bind="foreach: list">
-    <li data-bind="text: name, visible: show"></li>
-</ul>
+            <ul data-bind="foreach: list">
+            <li data-bind="text: name, visible: show"></li>
+            </ul>
+        </div>
+        <div class="col-sm-7">
+            <div id="map"  style="height: 75vh">
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
 
 
 <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js" ></script>
 <script src="app.js"></script>
+<script async defer type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyC7RttZ8V20gh-hK4qog29GCiPRwfRFF4I&callback=initMap"onerror='maperror()'></script>
 
 </body>
 </html>
