@@ -78,31 +78,29 @@ var model= function (data) {
   // gotClicked function gets called when user clicks Item from List. 
     // This function will animate the specific marker on maps. 
   self.gotClicked=function(){
-      map.setCenter(gCenter);
-    map.setZoom(10);
-  if (self.marker.getAnimation() !== null) {
+    // Resetting the zoom and center in case User navigates to other in maps.
+ map.setCenter(gCenter);
+  map.setZoom(10);
+   if (self.marker.getAnimation() !== null) {
       self.marker.setAnimation(null);
   }
   else {
  self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
   self.marker.setAnimation(google.maps.Animation.BOUNCE);
-  window.setTimeout(function(){
+  calling_api(self);
+
+       window.setTimeout(function(){
   self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-  self.marker.setAnimation(null);},2000);
+  self.marker.setAnimation(null);
+       },2000);
   }
   }
     
   //Below function is called, when User clicks on the marker. This will 
-    // call the foursqare api to set the content of infowindow.  
-  self.marker.addListener('click',function(){
-     // Resetting the zoom and center in case User navigates to other 
-      // in maps.
-      console.log("Clicked Event");
-      map.setCenter(gCenter);
-      map.setZoom(10);
-      calling_api(self);
-    })
-    
+    // call the gotClicked function that call
+    // foursqare api to set the content of infowindow.
+  self.marker.addListener('click',self.gotClicked);
+
 }
 
 // Below function makes ajax call to foursqaure api and sets the infowindow.
@@ -135,7 +133,8 @@ var calling_api=function (self) {
             '<a>'+self.website+'</a>'+
             '<p style="font-size: 0.8em"><em>'+self.status+'</em></p>'+
             '<p style="font-size: 0.8em"><em>Ratings: '+self.ratings+
-            '</em></p>';
+            '</em></p>'+
+            '<p style="font-size: 0.5em">Powered By FourSquare API</p>';
     infowindow.setContent(infoContent);
     infowindow.open(map,self.marker);
     },error:function(){
@@ -156,6 +155,8 @@ var ViewModel = function() {
     for(i=0; i<locations.length;i++) {
         self.list.push(new model(locations[i]));
     }
+
+
     // This is called, when user does a keyUp event in search Bar.
     self.query.subscribe(function(value){
     if (value != "") {
@@ -188,10 +189,17 @@ map = new google.maps.Map(document.getElementById('map'), {
         lat: 37.334273,
         lng: -121.889771
         },
-    zoom: 11,
+    zoom: 12,
     mapTypeControl: false
     });
+
+
 infowindow = new google.maps.InfoWindow();
+infowindow.addListener('closeclick',function(){
+         map.setCenter(gCenter);
+        map.setZoom(11);
+   });
+
 ko.applyBindings(new ViewModel());
 }
 function error(){
