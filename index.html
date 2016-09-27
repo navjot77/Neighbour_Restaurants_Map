@@ -17,8 +17,8 @@ minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
 <div class="jumbotron">
     <div class="row" style="margin: 0px;">
-        <div class="col-sm-4">
-            <h2><input data-bind="value: query, valueUpdate:'keyup'"></h2>
+        <div class="col-sm-4"  style="margin: 1em">
+            <h3><input data-bind="value: query, valueUpdate:'keyup'"></h3>
 
             <ul data-bind="foreach: list">
             <li data-bind="text: name, visible: show, click:gotClicked"></li>
