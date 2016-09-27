@@ -1,21 +1,13 @@
 <!DOCTYPE html>
+<head>
+<title>Neighborhood Map</title>
 <meta name="viewport" content="width=device-width,
 minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<meta charset="utf-8">
-<head>
 <link rel="stylesheet"
  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<!-- jQuery library -->
-<script
-     src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
-</script>
-<script
-    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-</script>
-
 </head>
 <body>
-<h1 style="text-align: center">Neighborhood Map</h1>
+<header style="text-align: center; font-size: 2.5em;">Neighborhood Map</header>
 <div class="jumbotron">
     <div class="row" style="margin: 0px;">
     <div class="col-sm-4"  style="margin: 1em">
@@ -40,7 +32,14 @@ minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     </div>
     </div>
 </div>
-
+<footer style="margin-left: 1em"> Udacity Full Stack Project</footer>
+<!-- jQuery library -->
+<script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+</script>
+<script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+</script>
 <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js" >
 </script>
 <script src="app.js"></script>
@@ -49,6 +48,5 @@ minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
         hK4qog29GCiPRwfRFF4I&callback=googleMap"
         onerror='error()'>
 </script>
-
 </body>
 </html>

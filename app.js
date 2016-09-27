@@ -55,7 +55,7 @@ var map, infowindow;
 var gCenter= {
         lat: 37.334273,
         lng: -121.889771
-}
+};
 // Object for each location is stored.
 //Here, show variable is made observable.
 var model= function (data) {
@@ -89,19 +89,19 @@ var model= function (data) {
   self.marker.setAnimation(google.maps.Animation.BOUNCE);
   calling_api(self);
 
-       window.setTimeout(function(){
+  window.setTimeout(function(){
   self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
   self.marker.setAnimation(null);
        },2000);
   }
-  }
+  };
     
   //Below function is called, when User clicks on the marker. This will 
     // call the gotClicked function that call
     // foursqare api to set the content of infowindow.
   self.marker.addListener('click',self.gotClicked);
 
-}
+};
 
 // Below function makes ajax call to foursqaure api and sets the infowindow.
 var calling_api=function (self) {
@@ -159,9 +159,9 @@ var ViewModel = function() {
 
     // This is called, when user does a keyUp event in search Bar.
     self.query.subscribe(function(value){
-    if (value != "") {
-        var value = value.toLowerCase();
-        var valRe = new RegExp(value + "\+");
+    if (value !== "") {
+        var val = value.toLowerCase();
+        var valRe = new RegExp(val + "\+");
         self.list().forEach(function (each, index) {
         if ((each.name.toLowerCase()).search(valRe) == -1) {
             each.show(false);
