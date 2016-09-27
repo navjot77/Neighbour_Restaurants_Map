@@ -194,6 +194,6 @@ map = new google.maps.Map(document.getElementById('map'), {
 infowindow = new google.maps.InfoWindow();
 ko.applyBindings(new ViewModel());
 }
-function error() {
+function error(){
     alert('Unable to Load Google Maps, check your internet Connection');
 }
