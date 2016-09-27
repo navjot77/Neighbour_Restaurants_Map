@@ -2,6 +2,9 @@
  * Created by navjo on 9/26/2016.
  */
 
+/*List of locations. Contains name of Restaurant, linkedId: Here is id which
+is used later in ajax call to get restaurant related data from
+FourSquare*/
 var locations = [
     {
     'title': 'Mezcal',
@@ -45,137 +48,152 @@ var locations = [
 }
 ];
 
+// global variables.
 var map, infowindow;
-
+// location of Map that will be point of center. This location is used in case
+// User goes out of scope after zooms in/out.
 var gCenter= {
         lat: 37.334273,
         lng: -121.889771
 }
+// Object for each location is stored.
+//Here, show variable is made observable.
 var model= function (data) {
     var self=this;
     self.name=data.title;
     self.linkedId=data.linkedId;
+    // 'show' will be false in case when user searches for restaurant and that
+    // restaurant name does not matches this object's restaurant name.
     self.show=ko.observable(true);
+    // Setting the map marker at specific location.
     self.marker = new google.maps.Marker({
     position: data.location,
     map: map,
     title: data.title,
     animation: google.maps.Animation.DROP
-  });
-    self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-    self.gotClicked=function(){
-        map.setCenter(gCenter);
-        map.setZoom(10);
-        if (self.marker.getAnimation() !== null) {
-    self.marker.setAnimation(null);
-  } else {
-            self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+    });
+  // Setting the default color of marker as Blue.
+  self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
 
-    self.marker.setAnimation(google.maps.Animation.BOUNCE);
-    window.setTimeout(function(){
-        self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-    self.marker.setAnimation(null);},2000);
-
+  // gotClicked function gets called when user clicks Item from List. 
+    // This function will animate the specific marker on maps. 
+  self.gotClicked=function(){
+      map.setCenter(gCenter);
+    map.setZoom(10);
+  if (self.marker.getAnimation() !== null) {
+      self.marker.setAnimation(null);
   }
-}
-    self.marker.addListener('click',function(){
-        console.log("Inside addListerner")
-          map.setCenter(gCenter);
-        map.setZoom(10);
-        //Call API here.. use ajax and get the data.. and display
-        calling_api(self);
-
-        console.log("Inside addListerner")
+  else {
+ self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  self.marker.setAnimation(google.maps.Animation.BOUNCE);
+  window.setTimeout(function(){
+  self.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+  self.marker.setAnimation(null);},2000);
+  }
+  }
+    
+  //Below function is called, when User clicks on the marker. This will 
+    // call the foursqare api to set the content of infowindow.  
+  self.marker.addListener('click',function(){
+     // Resetting the zoom and center in case User navigates to other 
+      // in maps.
+      console.log("Clicked Event");
+      map.setCenter(gCenter);
+      map.setZoom(10);
+      calling_api(self);
     })
     
 }
 
+// Below function makes ajax call to foursqaure api and sets the infowindow.
 var calling_api=function (self) {
     var CLIENT_ID="HMRBAIPPEKBU5FGBYHOVRJESIYPU0MT3GQ2UUFA1KQV5DM25";
     var CLIENT_SECRET="PC3DU4UEQ4P2E5HXYZUUWAFO3BIIXLK0XD4DDIAK4ZIF1ERM";
-    var send_url="https://api.foursquare.com/v2/venues/"+self.linkedId+"?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&v=20130815&ll=40.7,-74&query=sushi";
+    var send_url="https://api.foursquare.com/v2/venues/"+
+        self.linkedId+"?client_id="+CLIENT_ID+"&client_secret="+
+        CLIENT_SECRET+"&v=20130815&ll=40.7,-74&query=sushi";
 
-     $.ajax({
+    $.ajax({
         type: "GET",
         dataType: "json",
         url: send_url,
         success: function(data) {
-            console.log(data.response.venue.name);
-            self.ratings=data.response.venue.rating;
-
-            self.address=data.response.venue.location.address+" "+data.response.venue.location.city+" "+data.response.venue.location.country;
-            self.website=data.response.venue.url;
-            self.status=data.response.venue.hours.status;
-          //  console.log(data.response.venue);
-            self.imageUrl=data.response.venue.photos.groups[0].items[0].prefix+"100x150"+data.response.venue.photos.groups[0].items[0].suffix;
-
-            var infoContent='<p ><em style="font-size: 1em">'+self.name+'</em></p>'+
-                            '<img src="'+self.imageUrl+'" alt="Restaurant Image" style="float: left; margin-right:1em">' +
-                    '<p style="font-size: 0.9em">'+self.address+'</p>'+
-                    '<a>'+self.website+'</a>'+
-                    '<p style="font-size: 0.8em"><em>'+self.status+'</em></p>'+
-                    '<p style="font-size: 0.8em"><em>Ratings: '+self.ratings+'</em></p>';
-            infowindow.setContent(infoContent);
-        infowindow.open(map,self.marker);
-        },error:function(){
-             infowindow.setContent('<p>Unable to get data from FourSquare</p>');
-        infowindow.open(map,self.marker);
-         console.log("error in fetching API foursquare");
-         }
+        //console.log(data.response.venue.name);
+        self.ratings=data.response.venue.rating;
+        self.address=data.response.venue.location.address+" "+
+            data.response.venue.location.city+" "+
+            data.response.venue.location.country;
+        self.website=data.response.venue.url;
+        self.status=data.response.venue.hours.status;
+        self.imageUrl=data.response.venue.photos.groups[0].items[0].prefix+
+            "100x150"+data.response.venue.photos.groups[0].items[0].suffix;
+        var infoContent=
+            '<p ><em style="font-size: 1em">'+self.name+'</em></p>'+
+           '<img src="'+self.imageUrl+'" alt="Restaurant Image" ' +
+            'style="float: left; margin-right:1em">' +
+            '<p style="font-size: 0.9em">'+self.address+'</p>'+
+            '<a>'+self.website+'</a>'+
+            '<p style="font-size: 0.8em"><em>'+self.status+'</em></p>'+
+            '<p style="font-size: 0.8em"><em>Ratings: '+self.ratings+
+            '</em></p>';
+    infowindow.setContent(infoContent);
+    infowindow.open(map,self.marker);
+    },error:function(){
+         infowindow.setContent('<p>Unable to get data from FourSquare</p>');
+         infowindow.open(map,self.marker);
+        console.log("error in fetching API foursquare");
+     }
      });
-}
+};
 
+// ViewModel, creates object for each restaurant and stores 
+// in observable array.
 var ViewModel = function() {
-var self=this;
-self.list=ko.observableArray([]);
-self.query=ko.observable();
-
-for(i=0; i<locations.length;i++) {
-self.list.push(new model(locations[i]));
-}
+    var self=this;
+    self.list=ko.observableArray([]);
+    self.query=ko.observable();
     
-self.query.subscribe(function(value){
-if (value != "") {
-var value = value.toLowerCase();
-var valRe = new RegExp(value + "\+");
-self.list().forEach(function (each, index) {
-if ((each.name.toLowerCase()).search(valRe) == -1) {
-each.show(false);
-    each.marker.setMap(null);
-}
-else{
-    each.marker.setMap(map);
-each.show(true);
-}
-});
-}
-else{
-self.list().forEach(function (each, index) {
-each.show(true);
-    each.marker.setMap(map);
-});
-}
-});
-
-
+    for(i=0; i<locations.length;i++) {
+        self.list.push(new model(locations[i]));
+    }
+    // This is called, when user does a keyUp event in search Bar.
+    self.query.subscribe(function(value){
+    if (value != "") {
+        var value = value.toLowerCase();
+        var valRe = new RegExp(value + "\+");
+        self.list().forEach(function (each, index) {
+        if ((each.name.toLowerCase()).search(valRe) == -1) {
+            each.show(false);
+            each.marker.setMap(null);
+             }
+        else{
+            each.marker.setMap(map);
+            each.show(true);
+            }
+        });
+    }
+    else{
+        self.list().forEach(function (each, index) {
+        each.show(true);
+        each.marker.setMap(map);
+        });
+        }
+    });
 };
 
 
-function initMap() {
+function googleMap() {
 map = new google.maps.Map(document.getElementById('map'), {
-center: {
-lat: 37.334273,
+    center: {
+        lat: 37.334273,
         lng: -121.889771
-},
-zoom: 11,
-mapTypeControl: false
-});
-
+        },
+    zoom: 11,
+    mapTypeControl: false
+    });
 infowindow = new google.maps.InfoWindow();
-// Tried putting this in app.js but but received and error in console.
-
 ko.applyBindings(new ViewModel());
 }
-function maperror() {
-window.alert('Google Maps could not be loaded.');
+function error() {
+    alert('Unable to Load Google Maps, check your internet Connection');
 }
